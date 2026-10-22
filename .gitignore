@@ -44,3 +44,4 @@ next-env.d.ts
 /.data/
 # local agent settings
 .claude/settings.local.json
+!.env.example
