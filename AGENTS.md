@@ -17,11 +17,12 @@ to make them agree.
 ## Commands (pnpm only)
 
 - `pnpm check` — typecheck + lint + tests. Run it before claiming anything is done; paste the `Tests N passed` line.
+- `pnpm verify` — `pnpm check` + `next build` with zero warnings. The loop gate; run it before saying "done".
 - `pnpm test -- <file>` — one test file. `pnpm dev` — app on :3000 (never start a second one).
 
 ## Definition of done
 
-`pnpm check` green · every requirement you touched has a test named `R<id>: …` · no new warnings in `next build`.
+`pnpm verify` green (tests **and** a warning-free `next build`) · every requirement you touched has a test named `R<id>: …`.
 
 ## Rules the linter cannot enforce
 

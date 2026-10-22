@@ -13,7 +13,9 @@
     "loop": "bash scripts/loop.sh",
     "review": "bash scripts/review.sh",
     "agent:log": "node scripts/agent-log.mjs",
-    "hooks:test": "node scripts/hooks-test.mjs"
+    "hooks:test": "node scripts/hooks-test.mjs",
+    "build:check": "bash scripts/build-check.sh",
+    "verify": "pnpm check && pnpm build:check"
   },
   "dependencies": {
     "next": "16.4.2",
