@@ -13,7 +13,9 @@ export function todayIn(timeZone: string, now: Date): string {
 }
 
 function validEmail(email: string): boolean {
-  const parts = email.split("@");
+  const trimmed = email.trim();
+  if (/\s/.test(trimmed)) return false; // v1.3: no whitespace inside
+  const parts = trimmed.split("@");
   return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
 }
 
