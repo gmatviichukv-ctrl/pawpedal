@@ -153,7 +153,7 @@ export function BookingForm({ bike, gear, today }: { bike: Bike; gear: Gear[]; t
             <dt className="font-semibold">Total</dt><dd className="text-right font-semibold">{formatEur(quote.totalCents)}</dd>
           </dl>
         ) : (
-          <p className="text-sm opacity-70">Choose dates to see the price.</p>
+          <p className="text-sm opacity-70">{problems.length > 0 ? "Fix the problems below to see the price." : "Calculating price…"}</p>
         )}
         {problems.length > 0 && (
           <ul className="mt-3 list-disc pl-5 text-sm text-red-700 dark:text-red-400">
