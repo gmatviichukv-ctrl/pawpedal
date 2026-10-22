@@ -4,7 +4,7 @@
 > When reality disagrees with the spec, we stop, record the change in the **Changelog** at the bottom,
 > and only then change code. The spec is never silently rewritten to match the code.
 
-Status: **v1.2** (see Changelog). Items marked **[OWNER]** were decided by the owner
+Status: **v1.3** (see Changelog). Items marked **[OWNER]** were decided by the owner
 (Halyna), not by the agent.
 
 ## 1. Problem
@@ -75,7 +75,8 @@ Every requirement has an ID. Every ID gets at least one test whose name starts w
 - **R3.6** Gear is **optional** — a bike-only rental is allowed **[OWNER]**. When any gear is booked,
   `dogWeightKg` is required and must be 1–90.
 - **R3.7** The same gear id twice in one booking is an error.
-- **R3.8** Name is 2–80 characters; email contains one `@` with text on both sides.
+- **R3.8** Name is 2–80 characters after trimming; email (trimmed) contains one `@` with text on both sides and
+  *(v1.3)* no whitespace inside.
 - **R3.9** Every error has a stable `code` (for tests) and a human-readable `message` in English. All errors are
   returned together, not only the first one.
 
@@ -138,3 +139,5 @@ None open. All four were answered on 2026-10-22 — see Changelog v1.1.
 - v1.2 — found while designing the "My booking" screen (R6.3): R5.3 let anyone who knows a ref read the
   customer's name and email, while R6.3 already asks for the email. R5.3 now requires the email, with the same
   404 for "wrong email" and "unknown ref" as cancel (R5.4).
+- v1.3 — independent review (docs/reviews/20261022T080614Z-review.md, finding #1): R3.8 allowed `a b@c.com`.
+  Now: no whitespace inside the email; surrounding spaces and the name are trimmed (already the behaviour).

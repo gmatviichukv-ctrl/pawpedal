@@ -83,6 +83,10 @@ describe("R3 booking rules", () => {
     expect(codes({ customerEmail: "halyna.example.com" })).toEqual(["INVALID_EMAIL"]);
     expect(codes({ customerEmail: "a@@b" })).toEqual(["INVALID_EMAIL"]);
     expect(codes({ customerEmail: "@b.com" })).toEqual(["INVALID_EMAIL"]);
+    // review 2026-10-22 #1: whitespace inside an email passed the "one @" check
+    expect(codes({ customerEmail: "a b@c.com" })).toEqual(["INVALID_EMAIL"]);
+    expect(codes({ customerEmail: " @c.com" })).toEqual(["INVALID_EMAIL"]);
+    expect(codes({ customerEmail: "  halyna@example.com " })).toEqual([]); // surrounding spaces are trimmed
   });
 
   test("R3.9: all errors are returned together, each with an English message", () => {
