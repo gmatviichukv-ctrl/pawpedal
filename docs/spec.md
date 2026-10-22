@@ -4,7 +4,7 @@
 > When reality disagrees with the spec, we stop, record the change in the **Changelog** at the bottom,
 > and only then change code. The spec is never silently rewritten to match the code.
 
-Status: **v1.1 — owner decisions recorded** (see Changelog). Items marked **[OWNER]** were decided by the owner
+Status: **v1.2** (see Changelog). Items marked **[OWNER]** were decided by the owner
 (Halyna), not by the agent.
 
 ## 1. Problem
@@ -91,7 +91,8 @@ Every requirement has an ID. Every ID gets at least one test whose name starts w
 - **R5.1** `POST /api/quote` → `200 { quote, errors }` — lets the form show the price and problems live.
 - **R5.2** `POST /api/bookings` → `201 { booking }`; `400 { errors }` for rule violations; `409 { errors }` when
   not available; malformed JSON → `400`, never `500`.
-- **R5.3** `GET /api/bookings/:ref` → `200 { booking }` or `404`. The reference is case-insensitive.
+- **R5.3** *(v1.2)* `GET /api/bookings/:ref?email=…` → `200 { booking }` only when the email matches
+  (case-insensitive); otherwise `404` — the same response as an unknown ref. The reference is case-insensitive.
 - **R5.4** `POST /api/bookings/:ref/cancel` with `{ email }` → `200 { booking }` with `status: "cancelled"`;
   `404` for an unknown ref **or a wrong email** (same response — do not reveal which refs exist);
   `409` if already cancelled or if the rental has **already ended** (`today > to`). Cancelling is allowed any time
@@ -134,3 +135,6 @@ None open. All four were answered on 2026-10-22 — see Changelog v1.1.
   - R5.4: **changed** — the agent proposed "no cancelling on/after the start date"; the owner chose **cancel any
     time before the rental ends**.
   - R3.2: kept Europe/Madrid as the shop time zone.
+- v1.2 — found while designing the "My booking" screen (R6.3): R5.3 let anyone who knows a ref read the
+  customer's name and email, while R6.3 already asks for the email. R5.3 now requires the email, with the same
+  404 for "wrong email" and "unknown ref" as cancel (R5.4).

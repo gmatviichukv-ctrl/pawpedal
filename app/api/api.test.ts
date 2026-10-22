@@ -95,12 +95,22 @@ describe("R5.2 create booking", () => {
 });
 
 describe("R5.3 / R5.4 look up and cancel", () => {
-  test("R5.3: GET by ref, case-insensitive; unknown → 404", async () => {
+  test("R5.3: GET by ref + email, ref and email case-insensitive", async () => {
     const { booking } = await (await book()).json();
-    const res = await getBooking(new Request("http://test"), ctx(booking.ref.toLowerCase()));
+    const res = await getBooking(new Request("http://test?email=HALYNA%40example.com"), ctx(booking.ref.toLowerCase()));
     expect(res.status).toBe(200);
     expect((await res.json()).booking.ref).toBe(booking.ref);
-    expect((await getBooking(new Request("http://test"), ctx("ZZZZZZZZ"))).status).toBe(404);
+  });
+
+  test("R5.3 (v1.2): missing email, wrong email and unknown ref all give the same 404", async () => {
+    const { booking } = await (await book()).json();
+    const noEmail = await getBooking(new Request("http://test"), ctx(booking.ref));
+    const wrongEmail = await getBooking(new Request("http://test?email=x%40y.z"), ctx(booking.ref));
+    const unknown = await getBooking(new Request("http://test?email=halyna%40example.com"), ctx("ZZZZZZZZ"));
+    expect([noEmail.status, wrongEmail.status, unknown.status]).toEqual([404, 404, 404]);
+    const bodies = await Promise.all([noEmail.json(), wrongEmail.json(), unknown.json()]);
+    expect(bodies[0]).toEqual(bodies[2]);
+    expect(bodies[1]).toEqual(bodies[2]);
   });
 
   test("R5.4: cancel with the right email → cancelled, and the trailer is free again (R4.4)", async () => {
