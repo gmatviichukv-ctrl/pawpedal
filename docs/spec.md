@@ -4,8 +4,8 @@
 > When reality disagrees with the spec, we stop, record the change in the **Changelog** at the bottom,
 > and only then change code. The spec is never silently rewritten to match the code.
 
-Status: **v1 — draft for owner review.** Items marked **[OWNER]** are decisions the owner (Halyna) confirms or
-changes; until then the default written here applies.
+Status: **v1.1 — owner decisions recorded** (see Changelog). Items marked **[OWNER]** were decided by the owner
+(Halyna), not by the agent.
 
 ## 1. Problem
 
@@ -46,8 +46,8 @@ Seed data: 4 bikes, 4 gear items (one of each kind).
 
 ### 5.2 Booking (stored in `.data/bookings.json`, not in git)
 
-`ref` (8 uppercase letters/digits, no ambiguous `0 O 1 I`), `bikeId`, `gearIds[]`, `from`, `to`
-(`YYYY-MM-DD`, both inclusive), `dogWeightKg`, `customerName`, `customerEmail`, `status` (`active` | `cancelled`),
+`ref` (8 uppercase letters/digits, no ambiguous `0 O 1 I`), `bikeId`, `gearIds[]` (may be empty), `from`, `to`
+(`YYYY-MM-DD`, both inclusive), `dogWeightKg?` (required when any gear is booked), `customerName`, `customerEmail`, `status` (`active` | `cancelled`),
 `totalCents`, `createdAt`, `cancelledAt?`.
 
 ## 6. Functional requirements
@@ -72,7 +72,8 @@ Every requirement has an ID. Every ID gets at least one test whose name starts w
 - **R3.3** Maximum rental: **[OWNER] 30 days**.
 - **R3.4** A **trailer** requires a bike with `hasTrailerHitch`. A **basket** requires a bike with `hasFrontRack`.
 - **R3.5** Gear with `maxDogWeightKg` cannot be booked for a heavier dog (e.g. a basket is max 8 kg).
-- **R3.6** At least one gear item is required — this is a dog-gear rental **[OWNER]**.
+- **R3.6** Gear is **optional** — a bike-only rental is allowed **[OWNER]**. When any gear is booked,
+  `dogWeightKg` is required and must be 1–90.
 - **R3.7** The same gear id twice in one booking is an error.
 - **R3.8** Name is 2–80 characters; email contains one `@` with text on both sides.
 - **R3.9** Every error has a stable `code` (for tests) and a human-readable `message` in English. All errors are
@@ -93,7 +94,8 @@ Every requirement has an ID. Every ID gets at least one test whose name starts w
 - **R5.3** `GET /api/bookings/:ref` → `200 { booking }` or `404`. The reference is case-insensitive.
 - **R5.4** `POST /api/bookings/:ref/cancel` with `{ email }` → `200 { booking }` with `status: "cancelled"`;
   `404` for an unknown ref **or a wrong email** (same response — do not reveal which refs exist);
-  `409` if already cancelled or if the rental has already started **[OWNER: no cancelling on/after `from`]**.
+  `409` if already cancelled or if the rental has **already ended** (`today > to`). Cancelling is allowed any time
+  before the end, including during the rental **[OWNER]**. Refunds are out of scope (no payments in v1).
 
 ### R6 — UI
 - **R6.1** `/` — bike list → `/book/:bikeId` form: dates, dog weight, gear checkboxes (gear that cannot fit this
@@ -120,11 +122,15 @@ Every requirement has an ID. Every ID gets at least one test whose name starts w
 
 ## 9. Open questions for the owner
 
-1. Discount rule and maximum rental length (R2.3, R3.3) — keep 10 % from 7 days, max 30 days?
-2. Shop time zone for "today" (R3.2) — Europe/Madrid?
-3. Must every booking include dog gear (R3.6), or can someone rent only a bike?
-4. Cancellation cut-off (R5.4) — until the day before `from`, or until `from` itself?
+None open. All four were answered on 2026-10-22 — see Changelog v1.1.
 
 ## Changelog
 
-- v1 — initial spec.
+- v1 — initial spec (agent draft).
+- v1.1 — owner decisions (2026-10-22):
+  - R2.3 / R3.3: **kept** the agent's proposal — 10 % off from 7 days, max 30 days.
+  - R3.6: **changed** — the agent proposed "gear required"; the owner chose **bike-only rentals are allowed**.
+    Consequence: dog weight is only required when gear is booked.
+  - R5.4: **changed** — the agent proposed "no cancelling on/after the start date"; the owner chose **cancel any
+    time before the rental ends**.
+  - R3.2: kept Europe/Madrid as the shop time zone.
