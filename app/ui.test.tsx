@@ -45,10 +45,42 @@ test("R6.2: after booking, the full reference is shown", async () => {
       ? Response.json({ booking: { ref: "ABCD2345", bikeId: "cargo-long", gearIds: [], from: "2026-11-02", to: "2026-11-03", totalCents: 7600, status: "active" } }, { status: 201 })
       : Response.json({ quote: null, errors: [] }),
   ));
+  const writeText = vi.fn(async () => {});
+  vi.stubGlobal("navigator", { ...navigator, clipboard: { writeText } });
   render(<BookingForm bike={byId("cargo-long")} gear={gear} today="2026-11-01" />);
   fireEvent.click(screen.getByRole("button", { name: "Book" }));
   expect(await screen.findByText("ABCD2345")).toBeDefined();
-  expect(screen.getByRole("button", { name: "Copy" })).toBeDefined();
+  expect(screen.getByText(/2026-11-02 → 2026-11-03/)).toBeDefined();
+  expect(screen.getByText("Total €76.00")).toBeDefined();
+  fireEvent.click(screen.getByRole("button", { name: "Copy" }));
+  await waitFor(() => expect(screen.getByRole("button", { name: "Copied" })).toBeDefined());
+  expect(writeText).toHaveBeenCalledWith("ABCD2345");
+});
+
+test("R6.1: rule problems from /api/quote are shown; name/email problems are not shown while typing", async () => {
+  vi.stubGlobal("fetch", vi.fn(async () => Response.json({
+    quote: null,
+    errors: [
+      { code: "DOG_TOO_HEAVY", message: "Front basket for small dogs is limited to dogs up to 8 kg." },
+      { code: "INVALID_NAME", message: "Name must be 2 to 80 characters." },
+    ],
+  })));
+  render(<BookingForm bike={byId("cargo-long")} gear={gear} today="2026-11-01" />);
+  await act(() => vi.advanceTimersByTimeAsync(300));
+  expect(await screen.findByText(/limited to dogs up to 8 kg/)).toBeDefined();
+  expect(screen.queryByText(/Name must be/)).toBeNull();
+});
+
+test("R6.4: every form input has an accessible label", () => {
+  vi.stubGlobal("fetch", vi.fn(async () => Response.json({ quote: null, errors: [] })));
+  const { container } = render(<BookingForm bike={byId("cargo-long")} gear={gear} today="2026-11-01" />);
+  fireEvent.click(screen.getByRole("checkbox", { name: /Dog trailer/ })); // reveals the weight field
+  for (const input of Array.from(container.querySelectorAll("input"))) {
+    expect(input.closest("label"), `input ${input.type} has no label`).not.toBeNull();
+  }
+  cleanup();
+  const lookup = render(<MyBooking bikes={bikes} gear={gear} />);
+  for (const input of Array.from(lookup.container.querySelectorAll("input"))) expect(input.closest("label")).not.toBeNull();
 });
 
 test("R6.3: look up with ref + email, then cancel after confirming", async () => {
@@ -59,11 +91,13 @@ test("R6.3: look up with ref + email, then cancel after confirming", async () =>
       : Response.json({ booking }),
   );
   vi.stubGlobal("fetch", fetchMock);
-  render(<MyBooking />);
+  render(<MyBooking bikes={bikes} gear={gear} />);
   fireEvent.change(screen.getByLabelText("Booking reference"), { target: { value: "abcd2345" } });
   fireEvent.change(screen.getByLabelText("Email used for the booking"), { target: { value: "h@x.com" } });
   fireEvent.click(screen.getByRole("button", { name: "Find booking" }));
   expect(await screen.findByText("Active")).toBeDefined();
+  expect(screen.getByText("Longtail Cargo")).toBeDefined(); // names, not ids (review #3)
+  expect(screen.getByText("Dog trailer")).toBeDefined();
   expect(fetchMock.mock.calls[0]?.[0]).toBe("/api/bookings/abcd2345?email=h%40x.com");
 
   fireEvent.click(screen.getByRole("button", { name: "Cancel booking" }));
@@ -74,7 +108,7 @@ test("R6.3: look up with ref + email, then cancel after confirming", async () =>
 
 test("R6.3: an unknown booking shows the server's message", async () => {
   vi.stubGlobal("fetch", vi.fn(async () => Response.json({ errors: [{ code: "NOT_FOUND", message: "Booking not found." }] }, { status: 404 })));
-  render(<MyBooking />);
+  render(<MyBooking bikes={bikes} gear={gear} />);
   fireEvent.click(screen.getByRole("button", { name: "Find booking" }));
   expect(await screen.findByRole("alert")).toHaveProperty("textContent", "Booking not found.");
 });
