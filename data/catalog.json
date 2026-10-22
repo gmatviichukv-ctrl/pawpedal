@@ -1,0 +1,14 @@
+{
+  "bikes": [
+    { "id": "city-classic", "name": "City Classic", "type": "city", "pricePerDay": 1200, "hasTrailerHitch": false, "hasFrontRack": true },
+    { "id": "trek-explorer", "name": "Trekking Explorer", "type": "trekking", "pricePerDay": 1800, "hasTrailerHitch": true, "hasFrontRack": false },
+    { "id": "e-cruiser", "name": "E-Cruiser", "type": "e-bike", "pricePerDay": 3200, "hasTrailerHitch": true, "hasFrontRack": true },
+    { "id": "cargo-long", "name": "Longtail Cargo", "type": "cargo", "pricePerDay": 3800, "hasTrailerHitch": true, "hasFrontRack": true }
+  ],
+  "gear": [
+    { "id": "trailer-xl", "name": "Dog trailer (up to 40 kg)", "kind": "trailer", "pricePerDay": 900, "stock": 1, "maxDogWeightKg": 40 },
+    { "id": "basket-small", "name": "Front basket for small dogs", "kind": "basket", "pricePerDay": 400, "stock": 2, "maxDogWeightKg": 8 },
+    { "id": "leash-springer", "name": "Leash mount for running dogs", "kind": "leash-mount", "pricePerDay": 250, "stock": 4 },
+    { "id": "vest-reflective", "name": "Reflective dog vest", "kind": "vest", "pricePerDay": 100, "stock": 10 }
+  ]
+}

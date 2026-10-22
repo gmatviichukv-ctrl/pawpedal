@@ -1,20 +1,70 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "allow": ["Read", "Grep", "Glob", "Bash(pnpm check)", "Bash(pnpm test *)", "Bash(pnpm lint)", "Bash(git diff *)", "Bash(git log *)", "Bash(git status *)"],
-    "ask": ["Bash(pnpm add *)", "Bash(git push *)", "Bash(git commit *)"],
-    "deny": ["Read(./.env*)", "Edit(./.env*)", "Write(./.env*)", "Bash(rm -rf *)"]
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(pnpm check)",
+      "Bash(pnpm test *)",
+      "Bash(pnpm lint)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git status *)"
+    ],
+    "ask": [
+      "Bash(pnpm add *)",
+      "Bash(git push *)",
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Read(./.env*)",
+      "Edit(./.env*)",
+      "Bash(rm -rf *)"
+    ]
   },
   "hooks": {
     "PreToolUse": [
-      { "matcher": "*", "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-env.mjs\"" }] },
-      { "matcher": "*", "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-action.mjs\"" }] }
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-env.mjs\""
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-action.mjs\""
+          }
+        ]
+      }
     ],
     "PostToolUse": [
-      { "matcher": "*", "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-action.mjs\"" }] }
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-action.mjs\""
+          }
+        ]
+      }
     ],
     "PostToolUseFailure": [
-      { "matcher": "*", "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-action.mjs\"" }] }
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-action.mjs\""
+          }
+        ]
+      }
     ]
   }
 }
