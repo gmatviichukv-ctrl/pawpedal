@@ -17,8 +17,9 @@ export function parseBookingRequest(input: unknown): BookingRequest | null {
     gearIds: o.gearIds,
     from: o.from,
     to: o.to,
-    customerName: o.customerName,
-    customerEmail: o.customerEmail,
+    // Stored trimmed, so lookup/cancel (which trim their input) always compare like with like.
+    customerName: o.customerName.trim(),
+    customerEmail: o.customerEmail.trim(),
   };
   if (typeof o.dogWeightKg === "number") req.dogWeightKg = o.dogWeightKg;
   return req;
