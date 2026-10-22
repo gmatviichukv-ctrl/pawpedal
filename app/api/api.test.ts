@@ -130,6 +130,13 @@ describe("R5.3 / R5.4 look up and cancel", () => {
     expect(await wrongEmail.json()).toEqual(await unknownRef.json());
   });
 
+  test("R5.3/R5.4: an email typed with surrounding spaces still finds and cancels the booking", async () => {
+    const { booking } = await (await book({ customerEmail: "  Halyna@Example.com " })).json();
+    expect(booking.customerEmail).toBe("Halyna@Example.com");
+    expect((await getBooking(new Request("http://test?email=halyna%40example.com"), ctx(booking.ref))).status).toBe(200);
+    expect((await postCancel(json({ email: "halyna@example.com" }), ctx(booking.ref))).status).toBe(200);
+  });
+
   test("R5.4: cancelling twice → 409", async () => {
     const { booking } = await (await book()).json();
     expect((await postCancel(json({ email: valid.customerEmail }), ctx(booking.ref))).status).toBe(200);
