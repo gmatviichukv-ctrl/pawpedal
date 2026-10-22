@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatEur } from "@/lib/display";
-import type { Booking } from "@/lib/types";
+import type { Bike, Booking, Gear } from "@/lib/types";
 
 const field = "w-full rounded-lg border border-black/20 bg-transparent px-3 py-2 dark:border-white/25";
 
@@ -11,7 +11,7 @@ type View =
   | { kind: "loading" }
   | { kind: "found"; booking: Booking; confirming: boolean; error?: string };
 
-export function MyBooking() {
+export function MyBooking({ bikes, gear }: { bikes: Bike[]; gear: Gear[] }) {
   const [ref, setRef] = useState("");
   const [email, setEmail] = useState("");
   const [view, setView] = useState<View>({ kind: "form" });
@@ -52,8 +52,9 @@ export function MyBooking() {
         </p>
         <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
           <dt className="opacity-70">Dates</dt><dd>{b.from} → {b.to}</dd>
-          <dt className="opacity-70">Bike</dt><dd>{b.bikeId}</dd>
-          <dt className="opacity-70">Gear</dt><dd>{b.gearIds.length ? b.gearIds.join(", ") : "none"}</dd>
+          <dt className="opacity-70">Bike</dt><dd>{bikes.find((x) => x.id === b.bikeId)?.name ?? b.bikeId}</dd>
+          <dt className="opacity-70">Gear</dt>
+          <dd>{b.gearIds.length ? b.gearIds.map((id) => gear.find((g) => g.id === id)?.name ?? id).join(", ") : "none"}</dd>
           <dt className="opacity-70">Total</dt><dd>{formatEur(b.totalCents)}</dd>
         </dl>
         {view.error && <p role="alert" className="mt-3 text-sm text-red-700">{view.error}</p>}
