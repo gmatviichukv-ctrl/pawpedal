@@ -33,7 +33,7 @@ gate on its own and brings evidence · **4** independent agents, human combines 
 | 14 | Fixes from review 1 | 2 | orchestrator, test first | `5d539d0` red → `e54eb71`; `c45a5ff` red → `9c5f179` | |
 | 15 | Review 2 (UI only — review 1 skipped it) | 4 | checker: APPROVE + 5 minor | `docs/reviews/20261022T080847Z-review.md` | |
 | 16 | Fixes from review 2 | 2 | orchestrator, test first | `8a9de8b` red → `9cf5de4` | |
-| 17 | Final review, push, publish | 1 | **owner** | _owner fills in_ | publishing is the owner's act |
+| 17 | Final review, push, publish | 1 | **owner** | ran the app locally on 27 Oct: booked cargo + trailer for 7 days (10 % off shown), basket disabled on trekking bike, second trailer booking refused, cancelled with wrong/right email; confirmed spec v1.2 and v1.3; pushed to GitHub | publishing is the owner's act |
 
 ## Changes of trust level
 

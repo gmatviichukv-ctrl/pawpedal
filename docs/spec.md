@@ -141,3 +141,4 @@ None open. All four were answered on 2026-10-22 — see Changelog v1.1.
   404 for "wrong email" and "unknown ref" as cancel (R5.4).
 - v1.3 — independent review (docs/reviews/20261022T080614Z-review.md, finding #1): R3.8 allowed `a b@c.com`.
   Now: no whitespace inside the email; surrounding spaces and the name are trimmed (already the behaviour).
+   - v1.3.1 — owner confirmed v1.2 and v1.3 on 2026-10-27.
